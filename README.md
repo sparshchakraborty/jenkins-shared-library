@@ -1,89 +1,89 @@
 # Jenkins Shared Library – Pipeline as Code
 
 ## Overview
-This repository contains a **Jenkins Shared Library** that implements the **Pipeline as Code** approach.  
-It centralizes CI/CD pipeline logic so multiple application repositories can reuse the same standardized pipeline instead of maintaining duplicated Jenkinsfiles.
+This repository contains a **Jenkins Shared Library** that implements the **Pipeline as Code** pattern.  
+It centralizes CI/CD pipeline logic so multiple application repositories can reuse the same standardized Jenkins pipeline instead of keeping duplicated Jenkinsfiles.
 
-This makes pipelines easier to maintain, more consistent across teams, and simpler to extend.
+Benefits:
+- Easier to maintain CI/CD logic
+- Consistent pipelines across teams
+- Faster onboarding for new repositories
+- Simple to extend for deployments and integrations
 
 ---
 
 ## Problem Statement
-In many Jenkins-based CI/CD environments:
+In many Jenkins-based environments:
 
-- Each repository maintains its own Jenkinsfile.
-- Pipeline logic gets duplicated across projects.
-- Updating pipelines requires changes in multiple repositories.
-- CI/CD behavior becomes inconsistent over time.
+- Each repository contains its own Jenkinsfile  
+- Pipeline logic is duplicated across projects  
+- Updating pipelines requires changing multiple repositories  
+- CI/CD behavior becomes inconsistent over time  
 
-This raises maintenance costs and increases the risk of configuration errors.
+This increases maintenance cost and the risk of errors.
 
 ---
 
 ## Solution
 This project solves those problems by:
 
-- Centralizing CI/CD logic in a Jenkins Shared Library.
-- Keeping application Jenkinsfiles minimal and configuration-based.
-- Reusing the same pipeline across repositories.
-- Enforcing consistent CI/CD standards across teams.
+- Centralizing CI/CD logic in a Jenkins Shared Library  
+- Keeping application Jenkinsfiles minimal and configuration-driven  
+- Reusing the same pipeline across repositories  
+- Enforcing consistent CI/CD standards across teams
 
 ---
 
 ## Architecture Overview
 
 ### High-level flow
-
-1. Developer pushes code to an application repository.
-2. Jenkins reads the repository `Jenkinsfile`.
-3. The `Jenkinsfile` references this shared library via `@Library`.
-4. Jenkins loads pipeline logic from this repository.
-5. The shared pipeline executes standardized CI/CD stages.
+1. Developer pushes code to an application repository.  
+2. Jenkins reads the repository `Jenkinsfile`.  
+3. The `Jenkinsfile` references this shared library via `@Library`.  
+4. Jenkins loads the pipeline logic from this repository.  
+5. The shared library executes standardized CI/CD stages (checkout, build, test, docker build, deploy placeholder).
 
 ---
 
 ## How It Works (step-by-step)
-
-1. Developer pushes code to the app repo.  
+1. Developer pushes code to the application repo.  
 2. Jenkins triggers a job and reads the app's `Jenkinsfile`.  
-3. `Jenkinsfile` references the shared library: `@Library('devops-lib') _`.  
-4. Jenkins downloads the shared library from this repository.  
-5. The shared pipeline runs standardized stages; behavior is controlled via parameters from the app repo.
+3. The `Jenkinsfile` references the shared library: `@Library('devops-lib') _`.  
+4. Jenkins downloads and loads the shared library from this repository.  
+5. The shared pipeline runs standardized stages; behavior is controlled by parameters passed from the app repo.
 
 ---
 
 ## Technologies Used
 - Jenkins  
-- Jenkins Shared Libraries  
-- Groovy  
+- Jenkins Shared Libraries (Groovy)  
 - Docker  
 - Git & GitHub
 
 ---
 
 ## Repository Structure
+A concise, wrapped representation that displays well on GitHub:
 
-Use this **nested list** representation (wraps nicely on narrow screens):
-
-- `jenkins-shared-library/`
-  - `vars/`
-    - `cicdPipeline.groovy` — main reusable pipeline definition
-  - `src/`
-    - `org/`
-      - `devops/` — utility classes (future use)
+- `jenkins-shared-library/`  
+  - `vars/`  
+    - `cicdPipeline.groovy` — main reusable pipeline definition  
+  - `src/`  
+    - `org/`  
+      - `devops/` — utility classes (future use)  
   - `README.md`
 
-> *Note:* If you prefer an ASCII tree, use a fenced code block. That preserves spacing but will introduce horizontal scrolling on small viewports.
+> If you prefer a fixed-width tree, place it inside a fenced code block. Note that code blocks may introduce horizontal scrolling on narrow screens.
 
 ---
 
 ## Shared Pipeline Details
 
 **`vars/cicdPipeline.groovy`**
-- Defines a reusable Jenkins pipeline function
-- Accepts configuration as a `Map`
-- Implements common CI/CD stages (checkout, build, test, docker build)
-- Extensible for deployment stages (Kubernetes, ECS, etc.)
+- Exposes a reusable pipeline function callable from an application `Jenkinsfile`.  
+- Accepts configuration as a `Map` (e.g., repo, buildCmd, testCmd, imageName, tag).  
+- Implements common CI/CD stages: checkout, build, test, docker build.  
+- Contains a deploy placeholder that can be extended for Kubernetes, ECS, or other targets.
 
 ---
 
@@ -98,51 +98,42 @@ cicdPipeline(
   imageName: 'pipeline-as-code',
   tag: 'v1'
 )
-The application Jenkinsfile contains no CI logic — only configuration values.
+The application Jenkinsfile contains no pipeline logic — only configuration values.
 
-Pipeline Stages
-
+Pipeline Stages (summary)
 Checkout — clone application source from GitHub
 
-Build — run the build command provided by the app
+Build — run the build command provided by the application
 
-Test — run automated tests
+Test — execute automated tests
 
-Docker Image Build — build Docker image from Dockerfile
+Docker Image Build — build Docker image using the repository Dockerfile
 
-Deploy — placeholder (extendable: Kubernetes, ECS, etc.)
+Deploy — placeholder for deployment steps (extensible)
 
 Benefits
+Removes duplicated Jenkinsfiles across repos
 
-Removes duplicated Jenkinsfiles
+Simplifies CI/CD maintenance and upgrades
 
-Simplifies CI/CD maintenance
+Improves consistency and reliability of pipelines
 
-Improves consistency across repositories
+Speeds up onboarding for new projects
 
-Faster onboarding for new projects
-
-Pipeline logic is version-controlled
+Pipeline logic is version-controlled and auditable
 
 Future Enhancements
+Push Docker images to a registry (ECR / Docker Hub)
 
-Push Docker images to a registry (ECR/Docker Hub)
+Branch-based pipeline behaviors (feature / staging / prod)
 
-Branch-based pipelines (feature, staging, prod)
+Automated deployments (Kubernetes / ECS) via the shared library
 
-Deployment automation (Kubernetes / ECS / Terraform)
+Security scanning (Trivy, Snyk) as pipeline stages
 
-Security scanning (Trivy / Snyk)
+Notifications (Slack / Email) and Slack workflow integration
 
-Slack / Email notifications
-
-Environment-based parameterization (dev/qa/prod)
+Environment parameterization (dev / qa / prod)
 
 Author
-
-This project is part of a DevOps portfolio demonstrating Jenkins Pipeline-as-Code and Shared Library design patterns.
-
-
----
-
-
+Part of a DevOps portfolio demonstrating practical Jenkins Pipeline-as-Code and Shared Library design patterns.
