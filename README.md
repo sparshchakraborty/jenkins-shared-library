@@ -98,4 +98,51 @@ cicdPipeline(
   imageName: 'pipeline-as-code',
   tag: 'v1'
 )
+The application Jenkinsfile contains no CI logic — only configuration values.
+
+Pipeline Stages
+
+Checkout — clone application source from GitHub
+
+Build — run the build command provided by the app
+
+Test — run automated tests
+
+Docker Image Build — build Docker image from Dockerfile
+
+Deploy — placeholder (extendable: Kubernetes, ECS, etc.)
+
+Benefits
+
+Removes duplicated Jenkinsfiles
+
+Simplifies CI/CD maintenance
+
+Improves consistency across repositories
+
+Faster onboarding for new projects
+
+Pipeline logic is version-controlled
+
+Future Enhancements
+
+Push Docker images to a registry (ECR/Docker Hub)
+
+Branch-based pipelines (feature, staging, prod)
+
+Deployment automation (Kubernetes / ECS / Terraform)
+
+Security scanning (Trivy / Snyk)
+
+Slack / Email notifications
+
+Environment-based parameterization (dev/qa/prod)
+
+Author
+
+This project is part of a DevOps portfolio demonstrating Jenkins Pipeline-as-Code and Shared Library design patterns.
+
+
+---
+
 
